@@ -52,6 +52,7 @@ def create_W(pre_nrns, post_nrns, sparse_fact):
     tmp = numpy.reshape(W, -1)
     tmp[rnd.sample(range(size(W)), int(size(W)*(1-sparse_fact)))] = 0
     W = numpy.reshape(tmp, shape(W))
+    return W
 #--------------------------------------------------
 
 
@@ -153,8 +154,8 @@ def run_single_trial(trial_num):
     else:
 	print "WARNING: connectivity file not specified! Creating a random graph with density {}".format(sparse_fact)
         # E-->E connection matrix
-        W_ee = create_W(800, 800, 1., [], [])
-        W_ss = create_W(240, 240, sparse_fact, [], [])
+        W_ee = create_W(800, 800, 1.)
+        W_ss = create_W(240, 240, sparse_fact)
         W_ss[0:120,0:120] *= wp_sparse
         W_ss[120:,120:] *= wp_sparse
         W_ss[0:120,120:] *= wm_sparse
@@ -162,11 +163,11 @@ def run_single_trial(trial_num):
         W_ee[0:240,0:240] = W_ss
         W_ee[240:,0:240] *= wm
         # E-->I connection matrix
-        W_ei = create_W(800, 200, 1., [], [])
+        W_ei = create_W(800, 200, 1.)
         # I-->I connection matrix
-        W_ii = create_W(200, 200, 1., [], [])
+        W_ii = create_W(200, 200, 1.)
         # I-->E connection matrix
-        W_ie = create_W(200, 800, 1., [], [])
+        W_ie = create_W(200, 800, 1.)
     
     # E-->E
     Cee = Connection(Pe, Pe, 's_ampa_rec', weight = W_ee,
